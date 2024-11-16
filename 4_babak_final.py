@@ -73,9 +73,13 @@ class Warehouse:
         for item in self.__item_storage:
             if not item_list:
                 item_list = [item]
+                continue
 
             elif item["name"] > item_list[-1]["name"]:
                 item_list = item_list + [item]
+            
+            elif item["name"] < item_list[0]["name"]:
+                item_list = [item] + item_list
 
             elif item["name"] < item_list[counter]["name"]:
                 item_list = item_list[:counter] + [item] + item_list[counter:]
@@ -91,15 +95,19 @@ class Warehouse:
         for item in self.__item_storage:
             if not item_list:
                 item_list = [item]
+                continue
 
             elif item["stocks"] > item_list[-1]["stocks"]:
                 item_list = item_list + [item]
+            
+            elif item["stocks"] < item_list[0]["stocks"]:
+                item_list = [item] + item_list
 
             elif item["stocks"] < item_list[counter]["stocks"]:
                 item_list = item_list[:counter] + [item] + item_list[counter:]
 
             counter += 1
-        
+
         return item_list
     
     def delete_item(self, item_name):
@@ -177,10 +185,28 @@ def main():
                 menu = input("Masukkan pilihan anda: ")
 
                 if menu == "1":
-                    result = warehouse.get_items()
-                    result = result if result else "Barang kosong"
+                    print("\n1. Berdasarkan terakhir ditambah\n2. Berdasarkan nama\n3. Berdasarkan jumlah stok")
+                    
+                    menu = input("Masukkan pilihan anda: ")
+                    print()
 
-                    print(f"Hasil:\n{result}\n")
+                    match menu:
+                        case "1":
+                            result = warehouse.get_items()
+                            print(f"Hasil:\n{result}")
+                        
+                        case "2":
+                            result = warehouse.get_sort_items_name()
+                            print(f"Hasil:\n{result}")
+                        
+                        case "3":
+                            result = warehouse.get_sort_items_stocks()
+                            print(f"Hasil:\n{result}")
+                        
+                        case _:
+                            print("Maaf pilihan anda tidak tersedia!")
+                        
+                    print()
                     continue
 
                 result = warehouse.get_item_minmax_stocks()
@@ -194,6 +220,8 @@ def main():
                         print(f"Barang stok paling dikit:\n{result[0]}")
                     case "3":
                         print(f"Barang stok paling banyak:\n{result[1]}")
+                    case _:
+                        print("Maaf pilihan anda tidak tersedia!")
                 
                 print()
             
